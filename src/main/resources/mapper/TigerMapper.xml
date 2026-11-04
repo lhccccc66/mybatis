@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace：绑定对应的Mapper接口全类名，实现接口与XML的关联 -->
+<mapper namespace="com.atguigu.mybatis.mapper.TigerMapper">
+
+    <!-- 1. 新增老虎：id=接口方法名，parameterType=参数类型（实体类全类名） -->
+    <insert id="insertTiger" parameterType="com.atguigu.mybatis.entities.Tiger">
+        INSERT INTO t_tiger (tiger_name, tiger_age, tiger_salary)
+        VALUES (#{tigerName}, #{tigerAge}, #{tigerSalary})
+    </insert>
+
+    <!-- 2. 根据ID删除老虎：#{tigerId}为参数占位符，防止SQL注入 -->
+    <delete id="deleteTigerById" parameterType="java.lang.Integer">
+        DELETE FROM t_tiger WHERE tiger_id = #{tigerId}
+    </delete>
+
+    <!-- 3. 根据ID更新老虎：动态取值实体类的属性 -->
+    <update id="updateTigerById" parameterType="com.atguigu.mybatis.entities.Tiger">
+        UPDATE t_tiger
+        SET tiger_name = #{tigerName},
+            tiger_age = #{tigerAge},
+            tiger_salary = #{tigerSalary}
+        WHERE tiger_id = #{tigerId}
+    </update>
+
+    <!-- 4. 根据ID查询老虎：resultType=返回值类型（实体类全类名） -->
+    <select id="selectTigerById" parameterType="java.lang.Integer" resultType="com.atguigu.mybatis.entities.Tiger">
+        SELECT tiger_id tigerId,
+               tiger_name tigerName,
+               tiger_age tigerAge,
+               tiger_salary tigerSalary
+        FROM t_tiger
+        WHERE tiger_id = #{tigerId}
+    </select>
+
+    <!-- 5. 查询所有老虎：resultType指定每行数据映射的实体类 -->
+    <select id="selectTigerList" resultType="com.atguigu.mybatis.entities.Tiger">
+        SELECT tiger_id     tigerId,
+               tiger_name   tigerName,
+               tiger_age    tigerAge,
+               tiger_salary tigerSalary
+        FROM t_tiger;
+    </select>
+
+    <select id="selectTigerByCondition" resultType="com.atguigu.mybatis.entities.Tiger">
+        select * from t_tiger
+        <where>
+            <if test="tigerName!=null and tigerName!=''">
+                and tiger_name like concat('%',#{tigerName},'%')
+            </if>
+            <if test="tigerSalary!=null">
+                and tiger_salary > #{tigerSalary}
+            </if>
+        </where>
+    </select>
+</mapper>
+
+
